@@ -1,0 +1,35 @@
+server:
+ port: 10000
+
+spring:
+  application:
+      name: pgw-stream-sender
+  session:
+    store-type: none
+  rabbitmq:           # rabbitmq连接-生产环境
+    addresses: 10.164.196.209:5672,10.164.196.210:5672,10.164.196.212:5672,10.164.196.213:5672
+    password: admin123
+    username: admin
+    publisher-confirms: true
+#  rabbitmq:           # rabbitmq连接
+#    addresses: 10.164.197.34:5672,10.164.197.36:5672
+#    password: admin123
+#    username: admin
+#    publisher-confirms: true
+  cloud:
+    stream:
+      bindings:
+        outCustInfo:
+          destination: ACQ_DIRECT_EXCHANGE
+          contentType: application/json
+          producer:
+            requiredGroups: pgw.trade
+      rabbit:
+        bindings:
+          outCustInfo:
+            producer:
+#              bindingRoutingKey: PUSH_REAL_CUST_INFO
+              routing-key-expression: '''PUSH_REAL_CUST_INFO'''
+management.security.enabled: false
+file:
+ name: classpath:cmbc_card_info.txt
